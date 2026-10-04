@@ -99,7 +99,7 @@ async function loadEligibility(
       .maybeSingle();
     if (error || !data) return null;
 
-    const scholarship = toMatchScholarship(data as Row);
+    const scholarship = toMatchScholarship(data as unknown as Row);
     const result = evaluateScholarship(profileResult.data, scholarship, todayIso);
     return {
       decision: result.decision,

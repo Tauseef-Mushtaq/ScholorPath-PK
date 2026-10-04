@@ -59,7 +59,7 @@ export async function loadOwnApplications(
     return null;
   }
   return (data ?? []).map((row) => {
-    const r = row as Row;
+    const r = row as unknown as Row;
     const sch = one(r.scholarships);
     const country = sch ? one(sch.countries) : null;
     const tasks = Array.isArray(r.application_tasks) ? (r.application_tasks as Row[]) : [];
@@ -111,7 +111,7 @@ export async function loadOwnApplication(
   }
   if (!data) return null;
 
-  const r = data as Row;
+  const r = data as unknown as Row;
   const sch = one(r.scholarships);
   const country = sch ? one(sch.countries) : null;
   const tasksRaw = Array.isArray(r.application_tasks) ? (r.application_tasks as Row[]) : [];
