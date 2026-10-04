@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AuthCard } from "@/components/auth/auth-card";
+import { DemoCredentials } from "@/components/auth/demo-credentials";
 import { LoginForm } from "@/components/auth/login-form";
 import { safeRedirectPath } from "@/lib/auth/routes";
 
@@ -30,6 +31,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
       }
     >
       <LoginForm next={next} notice={notice} />
+      <DemoCredentials />
     </AuthCard>
   );
 }
