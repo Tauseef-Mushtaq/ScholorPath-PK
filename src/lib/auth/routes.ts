@@ -4,6 +4,13 @@ import { ROLES, type Role } from "./roles";
 export const DEFAULT_AUTHENTICATED_PATH = "/dashboard";
 export const LOGIN_PATH = "/login";
 
+/** Landing page for each role after login (student dashboard, mentor dashboard, admin dashboard). */
+export function roleHomePath(role: Role): string {
+  if (role === "admin") return "/admin";
+  if (role === "mentor") return "/mentor/dashboard";
+  return DEFAULT_AUTHENTICATED_PATH;
+}
+
 /**
  * Route prefixes that require authentication.
  * NOTE: `/mentors` and `/mentors/[id]` are PUBLIC per docs/PAGES_AUTHORIZATION.md;

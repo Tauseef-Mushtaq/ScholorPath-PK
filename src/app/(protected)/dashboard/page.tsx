@@ -1,25 +1,29 @@
 import type { Metadata } from "next";
 
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { PageContainer } from "@/components/layout/page-container";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { roleHomePath } from "@/lib/auth/routes";
 import { requireUser } from "@/lib/auth/session";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
 export default async function DashboardPage() {
   const { user, role } = await requireUser();
+  // /dashboard is the student dashboard; mentors and admins have their own.
+  if (role !== "student") redirect(roleHomePath(role));
 
   return (
     <PageContainer>
-      <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+      <h1 className="text-3xl font-bold tracking-tight">Student dashboard</h1>
       <Card className="mt-6 max-w-2xl">
         <CardHeader>
           <CardTitle>You&apos;re signed in</CardTitle>
           <CardDescription>
-            Placeholder page. The real dashboard is built in a later module.
+            Use the menu on the left to move around your student area.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-1 text-sm text-muted-foreground">
@@ -27,19 +31,6 @@ export default async function DashboardPage() {
           <p>Role: {role}</p>
         </CardContent>
       </Card>
-      {role === "admin" ? (
-        <Card className="mt-4 max-w-2xl">
-          <CardHeader>
-            <CardTitle>Scholarship administration</CardTitle>
-            <CardDescription>Create, edit, publish and archive scholarships.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild size="sm">
-              <Link href="/admin/scholarships">Manage scholarships</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      ) : null}
       <Card className="mt-4 max-w-2xl">
         <CardHeader>
           <CardTitle>Your profile</CardTitle>

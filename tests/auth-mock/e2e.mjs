@@ -228,7 +228,7 @@ if (PHASE === "main") {
     const m = new Client(); await m.submit("/login", { email, password: "NewPassword-2" });
     let r = await m.get("/mentor/dashboard"); check("mentor /mentor/dashboard allowed", r.status !== 307, String(r.status));
     r = await m.get("/admin"); check("mentor /admin -> /dashboard", loc(r.loc) === "/dashboard");
-    r = await m.get("/dashboard"); check("dashboard shows role mentor", /Role:[^<]*(<!--.*?-->)?\s*mentor/.test(r.text));
+    r = await m.get("/dashboard"); check("mentor /dashboard -> /mentor/dashboard", r.status === 307 && loc(r.loc) === "/mentor/dashboard", `${r.status} ${r.loc}`);
     await mock("/_mock/set-role", { email, role: "admin" });
     const a = new Client(); await a.submit("/login", { email, password: "NewPassword-2" });
     r = await a.get("/admin"); check("admin /admin allowed", r.status !== 307, String(r.status));

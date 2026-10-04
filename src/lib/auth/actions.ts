@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import { getAppUrl, isSupabaseConfigured } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 
-import { DEFAULT_AUTHENTICATED_PATH, LOGIN_PATH, safeRedirectPath } from "./routes";
+import { fetchUserRole } from "./roles";
+import { DEFAULT_AUTHENTICATED_PATH, LOGIN_PATH, roleHomePath, safeRedirectPath } from "./routes";
 import type { AuthFormState } from "./types";
 import { normalizeEmail, validateEmail, validateNewPassword } from "./validation";
 
@@ -82,7 +83,7 @@ export async function login(_prev: AuthFormState, formData: FormData): Promise<A
   if (!isSupabaseConfigured()) return { ...NOT_CONFIGURED, email };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     logAuthError("login", error);
@@ -94,7 +95,10 @@ export async function login(_prev: AuthFormState, formData: FormData): Promise<A
     return { error: GENERIC_ERROR, email };
   }
 
-  redirect(safeRedirectPath(formData.get("next")));
+  // No explicit `next`: send each role to its own dashboard. Role comes from public.profiles
+  // (own row, user session); a failed lookup falls back to the student dashboard.
+  const role = (data.user ? await fetchUserRole(supabase, data.user.id) : null) ?? "student";
+  redirect(safeRedirectPath(formData.get("next"), roleHomePath(role)));
 }
 
 export async function logout() {

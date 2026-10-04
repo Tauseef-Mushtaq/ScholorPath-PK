@@ -3,6 +3,7 @@ import { GraduationCap } from "lucide-react";
 
 import { LogoutButton } from "@/components/auth/logout-button";
 import { Button } from "@/components/ui/button";
+import { roleHomePath } from "@/lib/auth/routes";
 import { getAuthState } from "@/lib/auth/session";
 import { publicNav } from "@/lib/config/navigation";
 import { siteConfig } from "@/lib/config/site";
@@ -14,20 +15,8 @@ export async function SiteHeader() {
 
   const authActions = auth.isAuthenticated ? (
     <>
-      <Button asChild variant="ghost" size="sm">
-        <Link href="/dashboard">Dashboard</Link>
-      </Button>
-      <Button asChild variant="ghost" size="sm">
-        <Link href="/matches">Matches</Link>
-      </Button>
-      <Button asChild variant="ghost" size="sm">
-        <Link href="/profile">Profile</Link>
-      </Button>
-      <Button asChild variant="ghost" size="sm">
-        <Link href="/documents">Documents</Link>
-      </Button>
-      <Button asChild variant="ghost" size="sm">
-        <Link href="/applications">Applications</Link>
+      <Button asChild size="sm">
+        <Link href={roleHomePath(auth.role)}>Dashboard</Link>
       </Button>
       <LogoutButton />
     </>

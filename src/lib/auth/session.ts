@@ -19,9 +19,14 @@ export const getAuthState = cache(async () => {
   const { data } = await supabase.auth.getClaims();
   const claims = data?.claims;
   if (!claims) return { isAuthenticated: false as const };
+  // Display-only role (RLS: own row only) so the header can show the right links.
+  // Never authorize with this: pages/actions use requireRole().
+  const sub = typeof claims.sub === "string" ? claims.sub : null;
+  const role: Role = sub ? ((await fetchUserRole(supabase, sub)) ?? "student") : "student";
   return {
     isAuthenticated: true as const,
     email: typeof claims.email === "string" ? claims.email : undefined,
+    role,
   };
 });
 
